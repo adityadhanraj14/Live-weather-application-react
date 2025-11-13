@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
-import './App.css';
-import Header from '../Components/Header/header';
-import SearchBar from '../Components/SearchBar/search_bar';
-import BigCard from '../Components/BigCard/bigcard';
+import Header from './Components/Header/header';
+import SearchBar from './Components/SearchBar/search_bar';
+import BigCard from './Components/BigCard/bigcard';
 
 function App() {
   const [location, setLocation] = useState({ lat: null, lon: null, adress: 'Current Location' });
