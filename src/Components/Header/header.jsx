@@ -1,33 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { MapPin, Search } from 'lucide-react';
+import { Cross, CrossIcon, MapPin, Search, X } from 'lucide-react';
 import Toggle from '../../CommonComponents/Toggle';
+import useGetSearchQuery from '../../../query/search';
 
-// Custom hook for debounced value
-// const useDebouncedValue = (value, delay = 500) => {
-//   const [debouncedValue, setDebouncedValue] = useState(value);
 
-//   useEffect(() => {
-//     const timer = setTimeout(() => {
-//       setDebouncedValue(value);
-//     }, delay);
-
-//     return () => clearTimeout(timer);
-//   }, [value, delay]);
-
-//   return debouncedValue;
-// };
-
-const Header = ({ onSearch }) => {
+const Header = () => {
   const [isDarkMode, setIsDarkMode] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  // const debouncedSearchQuery = useDebouncedValue(searchQuery, 500);
-
-  // Call onSearch callback when debounced value changes
-  // useEffect(() => {
-  //   if (onSearch && debouncedSearchQuery.trim()) {
-  //     onSearch(debouncedSearchQuery);
-  //   }
-  // }, [debouncedSearchQuery, onSearch]);
+  const { data: searchOption, isLoading, error } = useGetSearchQuery(['searchList'], searchQuery);
+  console.log(searchOption);
 
   return (
     <header className="flex items-center gap-5 p-4 bg-gray-900 text-white">
@@ -44,6 +25,11 @@ const Header = ({ onSearch }) => {
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Search city"
           className="w-full bg-gray-800 text-white pl-9 pr-3 py-1 rounded-md outline-none placeholder-gray-500 focus:ring-2 focus:ring-blue-500 transition"
+        />
+        <X
+          onClick={() => setSearchQuery('')}
+          size={18}
+          className='absolute right-3 top-1/2 tranform -translate-y-1/2 text-gray-400 hover: cursor-pointer shadow-md'
         />
       </div>
       <Toggle {...{ isDarkMode, setIsDarkMode }} />
