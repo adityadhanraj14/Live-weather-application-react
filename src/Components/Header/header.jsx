@@ -69,7 +69,7 @@ const Header = () => {
                       className="py-1"
                       onClick={() => {
                         clickedOptionRef.current = true;
-                        setSearchQuery(item.properties.formatted);
+                        setSearchQuery('');
                         setCurrentLocation(item.properties.formatted);
                         setShowDropDown(false)
                       }
