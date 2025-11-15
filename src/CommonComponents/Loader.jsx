@@ -20,34 +20,41 @@ const SpinLoader = ({ isLoading = false, size = "md", width, height }) => {
     );
 };
 
-// const CardLoader = () => {
-//     return (
-//         <div className="bg-gray-900 w-100 p-4 flex flex-rows-3 gap-3 justify-center item-center">
-//             {[1, 2, 3].map((j) => (
-//                 <div key={j}>
-//                     {[1, 2, 3].map((i) => (
-//                         <div
-//                             key={i}
-//                             className="h-6 w-24 bg-gray-400 animate-pulse rounded-full m-3"
-//                         ></div>
-//                     ))}
-//                 </div>))}
-//         </div>
-//     );
-// }
-const CardLoader = () => {
+const SmallTableLoader = () => {
+    return (
+        <div className="m-auto bg-gray-800 rounded-xl bg-gray-800 w-100 p-2 flex flex-rows-3 gap-3 animate-pulse justify-center item-center">
+            {[1, 2, 3].map((j) => (
+                <div key={j}>
+                    {[1, 2, 3].map((i) => (
+                        <div
+                            key={i}
+                            className="h-8 w-24 bg-gray-400 animate-pulse rounded-full m-3"
+                        ></div>
+                    ))}
+                </div>))}
+        </div>
+    );
+}
+const ParragraphLoader = () => {
   return (
-    <div className="animate-pulse bg-gray-800/50 rounded-xl p-4 w-full h-40">
+    <div className="animate-pulse bg-gray-800/50 p-4 w-full h-40">
       <div className="h-6 w-1/3 bg-gray-700 rounded mb-4"></div>
       <div className="h-4 w-1/2 bg-gray-700 rounded mb-2"></div>
       <div className="h-4 w-1/4 bg-gray-700 rounded"></div>
     </div>
   );
 };
-
+const CardLoader = () =>{
+    return (
+        <div className="w-90 h-55 bg-gray-800 p-4 rounded-xl m-auto animate-pulse">
+            <div className="bg-gray-400 h-10 px-2 animate-pulse m-3 rounded-xl"></div>
+            <div className="bg-gray-400 h-30 px-2 animate-pulse m-3 rounded-xl"></div>
+        </div>
+    )
+}
 const FullWidthLoader = () =>{
     return (
-        <div className="w-full h-70 bg-gray-800 p-4 rounded">
+        <div className="w-full h-70 bg-gray-800 p-4 animate-pulse">
             <div className="bg-gray-400 h-10 px-2 animate-pulse m-3 rounded-xl"></div>
             <div className="bg-gray-400 h-40 px-2 animate-pulse m-3 rounded-xl"></div>
         </div>
@@ -67,4 +74,4 @@ const PageLoader = () => {
 
 
 
-export { SpinLoader, CardLoader, FullWidthLoader,  PageLoader }
+export { SpinLoader, CardLoader, FullWidthLoader,  PageLoader, SmallTableLoader, ParragraphLoader }
