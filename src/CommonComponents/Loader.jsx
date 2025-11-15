@@ -1,4 +1,4 @@
-const SpinLoader = ({ isLoading = false, size = "md", width, height }) => {
+const SpinLoader = ({ isLoading = true, size = "md", width, height }) => {
     if (!isLoading) return null;
     const sizeMap = {
         sm: { w: "w-4", h: "h-4" },   // 16px

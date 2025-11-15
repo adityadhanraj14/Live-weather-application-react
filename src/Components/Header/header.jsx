@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Cross, CrossIcon, MapPin, Search, X } from 'lucide-react';
+import { MapPin, Search, X } from 'lucide-react';
 import Toggle from '../../CommonComponents/Toggle';
 import useGetSearchQuery from '../../../query/search';
 import { SpinLoader } from '../../CommonComponents/Loader';
@@ -22,7 +22,7 @@ const Header = () => {
       setShowDropDown(false);
       return;
     }
-    if (searchQuery.length > 4 && !isLoading) {
+    if (searchQuery.length > 4) {
       setShowDropDown(true);
       setSearchOption(data?.features || []);
     } else {
@@ -61,23 +61,31 @@ const Header = () => {
         {
           searchQuery.length > 4 && showDropDown && (
             <div className="absolute w-72 bg-gray-900 text-gray-200 p-2 rounded opacity-90 z-50 top-full mt-1">
-              {searchOption.map((item, index) => (
-                <div
-                  key={index}
-                  className="py-1"
-                  onClick={() => {
-                    clickedOptionRef.current = true;
-                    setSearchQuery(item.properties.formatted);
-                    setCurrentLocation(item.properties.formatted);
-                    setShowDropDown(false)
-                  }
-                  }>
-                  {item.properties.formatted}
+              {
+                !isLoading ? 
+                  searchOption.map((item, index) => (
+                    <div
+                      key={index}
+                      className="py-1"
+                      onClick={() => {
+                        clickedOptionRef.current = true;
+                        setSearchQuery(item.properties.formatted);
+                        setCurrentLocation(item.properties.formatted);
+                        setShowDropDown(false)
+                      }
+                      }>
+                      {item.properties.formatted}
+                    </div>
+                  ))
+                  :
+                  <div className='py-4'>
+                  <SpinLoader true></SpinLoader>
                 </div>
-              ))}
+              }
             </div>
           )
         }
+
       </div>
 
       <Toggle {...{ isDarkMode, setIsDarkMode }} />
