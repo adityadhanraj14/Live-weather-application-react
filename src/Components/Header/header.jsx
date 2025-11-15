@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Cross, CrossIcon, MapPin, Search, X } from 'lucide-react';
 import Toggle from '../../CommonComponents/Toggle';
 import useGetSearchQuery from '../../../query/search';
@@ -6,25 +6,35 @@ import { SpinLoader } from '../../CommonComponents/Loader';
 
 
 const Header = () => {
+  const clickedOptionRef = useRef(false);
   const [isDarkMode, setIsDarkMode] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [showDropDown, setShowDropDown] = useState(false);
   const [searchOption, setSearchOption] = useState([]);
-  const { data, isLoading, error } = useGetSearchQuery(['searchList'], searchQuery);
-useEffect(() => {
-  if (searchQuery.length > 4 && !isLoading) {
-    setShowDropDown(true);
-    setSearchOption(data?.features || []);
-  } else {
-    setShowDropDown(false);
-  }
-}, [searchQuery, data, isLoading]);
+  const [currentLocation, setCurrentLocation] = useState('Bengaluru, KR');
+  const shouldFetch = searchQuery.length > 4 && !clickedOptionRef.current;
+  const { data, isLoading, error } = useGetSearchQuery(searchQuery, shouldFetch);
+
+
+  useEffect(() => {
+    if (clickedOptionRef.current) {
+      clickedOptionRef.current = false;
+      setShowDropDown(false);
+      return;
+    }
+    if (searchQuery.length > 4 && !isLoading) {
+      setShowDropDown(true);
+      setSearchOption(data?.features || []);
+    } else {
+      setShowDropDown(false);
+    }
+  }, [searchQuery, data, isLoading]);
 
   return (
     <header className="relative flex items-center gap-5 p-4 bg-gray-900 text-white">
       <MapPin size={24} className="text-white ml-10" />
-      {'Bengaluru, KR'}
-      
+      {`${currentLocation}`}
+
       {/* search components*/}
       <div className='relative ml-auto'>
         <div className="relative w-72">
@@ -50,9 +60,18 @@ useEffect(() => {
         </div>
         {
           searchQuery.length > 4 && showDropDown && (
-            <div className="absolute w-72 bg-gray-900 text-gray-200 p-2 rounded opacity-90">
+            <div className="absolute w-72 bg-gray-900 text-gray-200 p-2 rounded opacity-90 z-50 top-full mt-1">
               {searchOption.map((item, index) => (
-                <div key={index} className="py-1">
+                <div
+                  key={index}
+                  className="py-1"
+                  onClick={() => {
+                    clickedOptionRef.current = true;
+                    setSearchQuery(item.properties.formatted);
+                    setCurrentLocation(item.properties.formatted);
+                    setShowDropDown(false)
+                  }
+                  }>
                   {item.properties.formatted}
                 </div>
               ))}

@@ -1,11 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 import { getSearchListapi } from './api';
-const useGetSearchQuery = (key,query) =>{
+const useGetSearchQuery = (query,enabled) =>{
     return useQuery({
-        queryKey:[key,query],
+        queryKey:['searchlist', query],
         queryFn: ()=> getSearchListapi(query),
-        // staleTime: 500,
-        // enabled: !!query.lenth>4
+        enabled: enabled
     })
 }
 export default useGetSearchQuery;
