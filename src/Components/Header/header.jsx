@@ -2,36 +2,70 @@ import React, { useState, useEffect } from 'react';
 import { Cross, CrossIcon, MapPin, Search, X } from 'lucide-react';
 import Toggle from '../../CommonComponents/Toggle';
 import useGetSearchQuery from '../../../query/search';
+import { SpinLoader } from '../../CommonComponents/Loader';
 
 
 const Header = () => {
   const [isDarkMode, setIsDarkMode] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  const { data: searchOption, isLoading, error } = useGetSearchQuery(['searchList'], searchQuery);
-  console.log(searchOption);
+  const [showDropDown, setShowDropDown] = useState(false);
+  const [searchOption, setSearchOption] = useState([]);
+  const { data, isLoading, error } = useGetSearchQuery(['searchList'], searchQuery);
+  useEffect(() => {
+    // const timer = setTimeout(() => {
+      
+      if (searchQuery.length > 4) {
+        setShowDropDown(true);
+      }
+      if (data?.features) {
+      setSearchOption(data.features);
+    }
+    // },);
+
+    // return () => clearTimeout(timer);
+  }, [searchQuery, data, isLoading]);
 
   return (
-    <header className="flex items-center gap-5 p-4 bg-gray-900 text-white">
+    <header className="relative flex items-center gap-5 p-4 bg-gray-900 text-white">
       <MapPin size={24} className="text-white ml-10" />
       {'Bengaluru, KR'}
-      <div className="relative w-96 ml-auto">
-        <Search
-          size={18}
-          className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-        />
-        <input
-          type="text"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="Search city"
-          className="w-full bg-gray-800 text-white pl-9 pr-3 py-1 rounded-md outline-none placeholder-gray-500 focus:ring-2 focus:ring-blue-500 transition"
-        />
-        <X
-          onClick={() => setSearchQuery('')}
-          size={18}
-          className='absolute right-3 top-1/2 tranform -translate-y-1/2 text-gray-400 hover: cursor-pointer shadow-md'
-        />
+      
+      {/* search components*/}
+      <div className='relative ml-auto'>
+        <div className="relative w-72">
+          <Search
+            size={18}
+            className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+          />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search city"
+            className="w-full bg-gray-800 text-white pl-9 pr-3 py-1 rounded-md outline-none placeholder-gray-500 focus:ring-2 focus:ring-blue-500 transition"
+          />
+          <X
+            onClick={() => {
+              setSearchQuery('')
+              setShowDropDown(false)
+            }}
+            size={18}
+            className='absolute right-3 top-1/2 tranform -translate-y-1/2 text-gray-400 hover: cursor-pointer shadow-md'
+          />
+        </div>
+        {
+          searchQuery.length > 4 && showDropDown && (
+            <div className="absolute w-72 bg-gray-900 text-gray-400 p-2 rounded opacity-85">
+              {searchOption.map((item, index) => (
+                <div key={index} className="py-1">
+                  {item?.properties?.city}, {item?.properties?.state}, {item?.properties?.country}
+                </div>
+              ))}
+            </div>
+          )
+        }
       </div>
+
       <Toggle {...{ isDarkMode, setIsDarkMode }} />
     </header>
   );

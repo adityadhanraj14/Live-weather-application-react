@@ -4,7 +4,8 @@ const useGetSearchQuery = (key,query) =>{
     return useQuery({
         queryKey:[key,query],
         queryFn: ()=> getSearchListapi(query),
-        // enabled: !!query,
+        // staleTime: 500,
+        // enabled: !!query.lenth>4
     })
 }
 export default useGetSearchQuery;
