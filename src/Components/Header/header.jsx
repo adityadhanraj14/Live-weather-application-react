@@ -11,19 +11,14 @@ const Header = () => {
   const [showDropDown, setShowDropDown] = useState(false);
   const [searchOption, setSearchOption] = useState([]);
   const { data, isLoading, error } = useGetSearchQuery(['searchList'], searchQuery);
-  useEffect(() => {
-    // const timer = setTimeout(() => {
-      
-      if (searchQuery.length > 4) {
-        setShowDropDown(true);
-      }
-      if (data?.features) {
-      setSearchOption(data.features);
-    }
-    // },);
-
-    // return () => clearTimeout(timer);
-  }, [searchQuery, data, isLoading]);
+useEffect(() => {
+  if (searchQuery.length > 4 && !isLoading) {
+    setShowDropDown(true);
+    setSearchOption(data?.features || []);
+  } else {
+    setShowDropDown(false);
+  }
+}, [searchQuery, data, isLoading]);
 
   return (
     <header className="relative flex items-center gap-5 p-4 bg-gray-900 text-white">
@@ -50,15 +45,15 @@ const Header = () => {
               setShowDropDown(false)
             }}
             size={18}
-            className='absolute right-3 top-1/2 tranform -translate-y-1/2 text-gray-400 hover: cursor-pointer shadow-md'
+            className='absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover: cursor-pointer shadow-md'
           />
         </div>
         {
           searchQuery.length > 4 && showDropDown && (
-            <div className="absolute w-72 bg-gray-900 text-gray-400 p-2 rounded opacity-85">
+            <div className="absolute w-72 bg-gray-900 text-gray-200 p-2 rounded opacity-90">
               {searchOption.map((item, index) => (
                 <div key={index} className="py-1">
-                  {item?.properties?.city}, {item?.properties?.state}, {item?.properties?.country}
+                  {item.properties.formatted}
                 </div>
               ))}
             </div>
