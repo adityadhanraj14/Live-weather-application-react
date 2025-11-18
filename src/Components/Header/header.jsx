@@ -1,17 +1,18 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { MapPin, Search, X } from 'lucide-react';
 import Toggle from '../../CommonComponents/Toggle';
 import useGetSearchQuery from '../../../query/search';
 import { SpinLoader } from '../../CommonComponents/Loader';
+import { useTheme } from '../../contexts/ThemeContext';
 
 
 const Header = () => {
   const clickedOptionRef = useRef(false);
-  const [isDarkMode, setIsDarkMode] = useState(true);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [showDropDown, setShowDropDown] = useState(false);
-  const [searchOption, setSearchOption] = useState([]);
-  const [currentLocation, setCurrentLocation] = useState('Bengaluru, KR');
+  const { isDarkMode, setIsDarkMode } = useTheme();
+  const [searchQuery, setSearchQuery] = React.useState('');
+  const [showDropDown, setShowDropDown] = React.useState(false);
+  const [searchOption, setSearchOption] = React.useState([]);
+  const [currentLocation, setCurrentLocation] = React.useState('Bengaluru, KR');
   const shouldFetch = searchQuery.length > 4 && !clickedOptionRef.current;
   const { data, isLoading, error } = useGetSearchQuery(searchQuery, shouldFetch);
 
@@ -31,64 +32,69 @@ const Header = () => {
   }, [searchQuery, data, isLoading]);
 
   return (
-    <header className="relative flex items-center gap-5 p-4 bg-gray-900 text-white">
-      <MapPin size={24} className="text-white ml-10" />
-      {`${currentLocation}`}
+    <header className={`${isDarkMode ? 'bg-gray-900 text-white' : 'bg-white text-gray-900'} w-full pt-6`}>
+      <div className="w-full px-3 sm:px-4 py-3">
+        <div className="flex flex-col sm:flex-row items-center sm:items-stretch gap-3 sm:gap-5">
+          <div className="flex items-center gap-3 min-w-0 ">
+            <MapPin size={24} className={`${isDarkMode ? 'text-white' : 'text-gray-900'}`} />
+            <span className="text-sm truncate min-w-0">{currentLocation}</span>
+          </div>
 
-      {/* search components*/}
-      <div className='relative ml-auto'>
-        <div className="relative w-72">
-          <Search
-            size={18}
-            className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-          />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search city"
-            className="w-full bg-gray-800 text-white pl-9 pr-3 py-1 rounded-md outline-none placeholder-gray-500 focus:ring-2 focus:ring-blue-500 transition"
-          />
-          <X
-            onClick={() => {
-              setSearchQuery('')
-              setShowDropDown(false)
-            }}
-            size={18}
-            className='absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover: cursor-pointer shadow-md'
-          />
-        </div>
-        {
-          searchQuery.length > 4 && showDropDown && (
-            <div className="absolute w-72 bg-gray-900 text-gray-200 p-2 rounded opacity-90 z-50 top-full mt-1">
-              {
-                !isLoading ? 
+          {/* search components - grow on small screens */}
+          <div className="relative mt-2 sm:mt-0 sm:ml-auto w-full sm:w-auto">
+            <div className="relative w-full sm:w-72">
+              <Search
+                size={18}
+                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+              />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search city"
+                className={`w-full ${isDarkMode ? 'bg-gray-800 text-white placeholder-gray-500' : 'bg-gray-100 text-gray-900 placeholder-gray-600'} pl-9 pr-10 py-2 rounded-md outline-none focus:ring-2 focus:ring-blue-500 transition`}
+              />
+              <X
+                onClick={() => {
+                  setSearchQuery('')
+                  setShowDropDown(false)
+                }}
+                size={18}
+                className='absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer'
+              />
+            </div>
+
+            {searchQuery.length > 4 && showDropDown && (
+              <div className={`absolute left-0 sm:right-0 w-full sm:w-72 p-2 rounded opacity-95 z-50 top-full mt-1 ${isDarkMode ? 'bg-gray-900 text-gray-200' : 'bg-white text-gray-800 border'}`}>
+                {!isLoading ? (
                   searchOption.map((item, index) => (
                     <div
                       key={index}
-                      className="py-1"
+                      className="py-1 text-sm truncate"
                       onClick={() => {
                         clickedOptionRef.current = true;
                         setSearchQuery('');
                         setCurrentLocation(item.properties.formatted);
-                        setShowDropDown(false)
-                      }
-                      }>
+                        setShowDropDown(false);
+                      }}
+                    >
                       {item.properties.formatted}
                     </div>
                   ))
-                  :
+                ) : (
                   <div className='py-4'>
-                  <SpinLoader true></SpinLoader>
-                </div>
-              }
-            </div>
-          )
-        }
+                    <SpinLoader />
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
 
+          <div className="ml-auto sm:ml-4">
+            <Toggle {...{ isDarkMode, setIsDarkMode }} />
+          </div>
+        </div>
       </div>
-
-      <Toggle {...{ isDarkMode, setIsDarkMode }} />
     </header>
   );
 };
