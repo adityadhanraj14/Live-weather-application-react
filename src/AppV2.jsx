@@ -1,10 +1,22 @@
 import { CardLoader, FullWidthLoader, PageLoader, ParragraphLoader, SmallTableLoader, SpinLoader } from './CommonComponents/Loader';
 import Header from './Components/Header/header';
+import NavigationBar from './Components/NavigationBar';
+import Today from './Components/Today';
 const AppV2 = () => {
     const isLoading=false;
     return (
         <>
             <Header/>
+            <div className='flex'>
+            <div className='left w-full'>
+                <NavigationBar/>
+                <Today/>
+            </div>
+            <div className='rightBar ml-auto w-120px'>
+                <CardLoader/>
+                <SmallTableLoader />
+            </div>
+            </div>
             {isLoading && <PageLoader/>}
             <FullWidthLoader/>
             <ParragraphLoader />
