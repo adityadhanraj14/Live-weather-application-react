@@ -8,7 +8,6 @@ const getSearchListapi = async (query) =>{
     if(!res.ok) throw new Error("api failed");
     return res.json();
 }
-VITE_SEARCH_LISTING_API_KEY=0ea35de2abbb46da90aeca610e0936a0
 
 export {
     getSearchListapi,
