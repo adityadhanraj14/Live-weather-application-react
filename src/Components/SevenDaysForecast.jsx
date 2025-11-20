@@ -1,36 +1,33 @@
 import { useTheme } from '../contexts/ThemeContext';
+import useWeather from '../hooks/useWeather';
+import { get7DayForecast, getSunTimes } from '../helper/get7DayForecast';
+import { ParragraphLoader } from '../CommonComponents/Loader';
 
 const SevenDaysForecast = () => {
   // 7-day forecast data
-  const forecast = [
-    { day: 'SAT', temp: 10, condition: 'cloud', icon: '☁️' },
-    { day: 'SUN', temp: 15, condition: 'rainy', icon: '🌧️' },
-    { day: 'MON', temp: 11, condition: 'rainy', icon: '🌧️' },
-    { day: 'TUE', temp: 10, condition: 'cloudy', icon: '☁️' },
-    { day: 'WED', temp: 12, condition: 'rainy', icon: '🌧️' },
-    { day: 'THU', temp: 10, condition: 'cloudy', icon: '☁️' },
-    { day: 'FRI', temp: 10, condition: 'Rainy', icon: '☁️' },
-  ];
-  // Sunrise and Sunset times (example)
-  const sunTimes = {
-    sunrise: '6:30 AM',
-    sunset: '7:45 PM',
-  };
+  const { data, isLoading, error } = useWeather(12.9163655,77.6101167); 
+  console.log("data", data);
+  if(isLoading) 
+  {  return <ParragraphLoader/>;}
+  if(error) 
+    return <div>Something went wrong</div>;
+  const forecast = get7DayForecast(data);
+  const sunTimes = getSunTimes(data);
   const { isDarkMode } = useTheme();
 
   return (
     <div className={`${isDarkMode ? 'bg-surface-700 text-white' : 'bg-white text-gray-900'} rounded-2xl w-full`}>
       <h2 className="text-lg font-semibold mb-4">7-Day Forecast</h2>
       <div className="flex flex-wrap justify-between gap-2 pb-2 w-full">
-        {forecast.map((day, idx) => (
+        {forecast.map((temp, idx) => (
           <div
             key={idx}
             className={`${isDarkMode ? 'bg-surface-600' : 'bg-gray-50'} rounded-xl p-4 w-full max-w-[90px] text-center flex-1`}
             style={{ minWidth: '70px' }}
           >
-            <p className="text-sm font-semibold mb-2">{day.day}</p>
-            <div className="text-3xl mb-2">{day.icon}</div>
-            <p className="text-lg font-bold">{day.temp}°</p>
+            <p className="text-sm font-semibold mb-2">{temp.day}</p>
+            <div className="text-3xl mb-2">⛅</div>
+            <p className="text-lg font-bold">{Math.round(temp.min)+"°"+"/" + Math.round(temp.max)+"°"}</p>
           </div>
         ))}
       </div>
