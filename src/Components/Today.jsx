@@ -1,17 +1,23 @@
 import { CardLoader } from "../CommonComponents/Loader";
 import { getTodayWeather } from "../helper/getTodayWeather";
-import useWeather from "../hooks/useWeather";
+import { useWeatherContext } from "../contexts/WeatherContext";
+import useWeather from "../../query/useWeather";
+import { getWeatherIcon } from "../helper/weatherIcons";
 
 const Today = () => {
+  const { lat, lon } = useWeatherContext();
+  const { data, isLoading, error } = useWeather(lat, lon);
 
-  const { data, isLoading, error } = useWeather(12.9163655, 77.6101167);
-  if (isLoading) return <CardLoader/>;
+  if (isLoading) return <CardLoader />;
   if (error) return <div>Something went wrong</div>;
+
   const weatherData = getTodayWeather(data);
+  // Get weather code from current_weather or hourly (fallback)
+  const weatherCode = data?.current_weather?.weathercode ?? data?.hourly?.weathercode?.[0];
+  const icon = getWeatherIcon(weatherCode);
+
   return (
-
-
-    <div className="col-span-1 text-white bg-gradient-to-br from-blue-00 to-blue-900 rounded-3xl p-6">
+    <div className="col-span-1 text-white bg-gradient-to-br from-blue-500 to-blue-900 rounded-3xl p-6 h-full">
       <div className="flex mb-4">
         <p className="text-lg font-semibold text-white">{weatherData.day}</p>
         <p className="text-md font-semibold ml-auto">{weatherData.time}</p>
@@ -20,7 +26,7 @@ const Today = () => {
       <div className="flex mb-6">
         <div className="text-6xl font-bold">{weatherData.temp}</div>
         <div className="flex items-center gap-2 mt-2 ml-auto">
-          <div className="text-5xl">⛅</div>
+          <div className="text-5xl">{icon}</div>
         </div>
       </div>
 
@@ -41,14 +47,6 @@ const Today = () => {
           <span>Humidity</span>
           <span className="font-semibold">{weatherData.humidity}</span>
         </div>
-        {/* <div className="flex justify-between">
-                <span>Sunrise</span>
-                <span className="font-semibold">{weatherData.sunrise}</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Sunset</span>
-                <span className="font-semibold">{weatherData.sunset}</span>
-              </div> */}
       </div>
     </div>
   )

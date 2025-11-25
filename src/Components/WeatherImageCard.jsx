@@ -1,30 +1,18 @@
-import React, { useEffect, useState } from 'react';
-import { fetchWeatherImages } from '../../../constant/index';
+import React, { useState } from 'react';
+import useWeatherImages from '../../query/useWeatherImages';
+import { useWeatherContext } from '../contexts/WeatherContext';
 
 
 const WeatherImageCard = ({ description = 'weather', title = 'Weather' }) => {
-  const [images, setImages] = useState([]);
+  const { locationName } = useWeatherContext();
   const [current, setCurrent] = useState(0);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const getImages = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const urls = await fetchWeatherImages(description);
-        setImages(urls);
-        setCurrent(0);
-      } catch (err) {
-        setError('Failed to load images');
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    getImages();
-  }, [description]);
+  // Use location name in query if available, otherwise fallback to description
+  const query = locationName && locationName !== 'Current Location'
+    ? `${locationName} ${description}`
+    : description;
+
+  const { data: images = [], isLoading: loading, error } = useWeatherImages(query);
 
   const handlePrev = () => {
     setCurrent((prev) => (prev === 0 ? images.length - 1 : prev - 1));

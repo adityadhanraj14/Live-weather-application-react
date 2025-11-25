@@ -3,14 +3,14 @@ import { useTheme } from '../contexts/ThemeContext';
 const NavigationBar = () => {
     const { isDarkMode } = useTheme();
     return (
-        <div className={`flex w-full p-4 ${isDarkMode ? 'bg-gray-900 text-white border-surface-600 border-b' : 'bg-white text-gray-900 border-b'} pb-3 mb-8`}>
-            <div className="leftNav flex gap-3 ml-4">
-                <button>Today</button>
-                <button>Tommorow</button>
-                <button>Next 7 Days</button>
+        <div className={`flex flex-col sm:flex-row w-full p-3 sm:p-4 ${isDarkMode ? 'bg-gray-900 text-white border-surface-600 border-b' : 'bg-white text-gray-900 border-b'} pb-3 mb-4 sm:mb-8 gap-4 sm:gap-0`}>
+            <div className="leftNav flex gap-3 overflow-x-auto sm:overflow-visible pb-2 sm:pb-0 scrollbar-hide">
+                <button className="whitespace-nowrap">Today</button>
+                <button className="whitespace-nowrap">Tommorow</button>
+                <button className="whitespace-nowrap">Next 7 Days</button>
             </div>
-            <div className="rightToggle ml-auto">
-                <div className="flex items-center mt-4">
+            <div className="rightToggle sm:ml-auto">
+                <div className="flex items-center">
                     <label className="mr-2">°C</label>
                     <label className="inline-flex items-center cursor-pointer">
                         <input type="checkbox" className="sr-only peer" />
@@ -23,4 +23,4 @@ const NavigationBar = () => {
     );
 };
 export default NavigationBar;
-// check plan go 
+// check plan go

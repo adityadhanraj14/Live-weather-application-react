@@ -1,7 +1,17 @@
 import React from 'react';
+import { useWeatherContext } from '../contexts/WeatherContext';
+import useWeather from '../../query/useWeather';
+import { getWeatherIcon } from '../helper/weatherIcons';
 
 // hourly: { time: string[], temperature_2m: number[] }
-const HourlyTemperatures = ({ hourly = null, title = "Today (24h)" }) => {
+const HourlyTemperatures = ({ title = "Today (24h)" }) => {
+  const { lat, lon } = useWeatherContext();
+  const { data, isLoading, error } = useWeather(lat, lon);
+
+  const hourly = data?.hourly;
+
+  if (isLoading) return <div className="bg-surface-700 rounded-2xl text-white p-4">Loading...</div>;
+
   if (!hourly || !hourly.time || !hourly.temperature_2m) {
     return (
       <div className="bg-surface-700 rounded-2xl text-white p-4">
@@ -28,20 +38,6 @@ const HourlyTemperatures = ({ hourly = null, title = "Today (24h)" }) => {
     temp: hourly.temperature_2m[i],
   }));
 
-  // Helper to map Open-Meteo weather codes to emojis
-  const weatherCodeToEmoji = (code) => {
-    if (code === 0) return '☀️';
-    if (code === 1) return '🌤️';
-    if (code === 2) return '⛅';
-    if (code === 3) return '☁️';
-    if (code === 45 || code === 48) return '🌫️';
-    if ([51, 53, 55, 80, 81, 82].includes(code)) return '🌦️';
-    if ([56, 57, 61, 63, 65, 66, 67].includes(code)) return '🌧️';
-    if ([71, 73, 75, 77].includes(code)) return '❄️';
-    if ([95, 96, 99].includes(code)) return '⛈️';
-    return '🌥️';
-  };
-
   // Responsive grid: show many on large screens, wrap on small screens
   return (
     <div className="bg-surface-700 rounded-2xl text-white p-4">
@@ -51,7 +47,7 @@ const HourlyTemperatures = ({ hourly = null, title = "Today (24h)" }) => {
           const hour = new Date(h.time).getHours();
           const label = `${hour}:00`;
           const code = hourly.weathercode && hourly.weathercode[indices[idx]];
-          const icon = weatherCodeToEmoji(code);
+          const icon = getWeatherIcon(code);
           return (
             <div
               key={idx}
@@ -71,5 +67,7 @@ const HourlyTemperatures = ({ hourly = null, title = "Today (24h)" }) => {
     </div>
   );
 };
+
+
 
 export default HourlyTemperatures;
